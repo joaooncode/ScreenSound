@@ -2,7 +2,13 @@
             "A simple program to play sound on screen events.\n" +
             "Press 'q' to quit.\n";
 
-List<string> bandas = new List<string> { "AC/DC", "Iron Maiden", "Guns N' Roses" };
+//List<string> bandas = new List<string> { "AC/DC", "Iron Maiden", "Guns N' Roses" };
+
+Dictionary<string, List<int>> bandas = new Dictionary<string, List<int>>();
+
+// Adicionando bandas e suas avaliações
+bandas.Add("AC/DC", new List<int> { 10, 9, 8, 6});
+bandas.Add("Iron Maiden", new List<int>());
 
 void ExibeScreenSound()
 {
@@ -61,11 +67,7 @@ void ExibeMenuOpcoes()
                     ExibirBandas();
                     break;
                 case 3:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("Avaliar uma banda");
-                    Console.ResetColor();
-                    Console.WriteLine("\nPressione qualquer tecla para voltar ao menu.");
-                    Console.ReadKey();
+                    AvaliarBanda();
                     break;
                 case 4:
                     Console.ForegroundColor = ConsoleColor.Yellow;
@@ -113,7 +115,7 @@ void RegistrarBandas()
         string nomeBanda = Console.ReadLine()!;
         if (string.IsNullOrEmpty(nomeBanda))
             throw new Exception("Nome da banda não pode ser vazio.");
-        bandas.Add(nomeBanda);
+        bandas.Add(nomeBanda, new List<int>());
         Console.WriteLine($"{nomeBanda} registrada com sucesso!\n");
     }
     catch (Exception ex)
@@ -136,7 +138,7 @@ void ExibirBandas()
     }
     else
     {
-        foreach (var banda in bandas)
+        foreach (var banda in bandas.Keys)
         {
             Console.WriteLine($" - {banda}");
         }
@@ -146,5 +148,56 @@ void ExibirBandas()
     Console.WriteLine("\nPressione qualquer tecla para voltar ao menu.");
     Console.ReadKey();
 }
+
+void AvaliarBanda()
+{
+    Console.Clear();
+    Console.WriteLine("Avaliar uma banda");
+
+    // Exibe as bandas registradas
+    if (bandas.Count == 0)
+    {
+        Console.WriteLine("Nenhuma banda registrada para avaliar.");
+        Console.WriteLine("\nPressione qualquer tecla para voltar ao menu.");
+        Console.ReadKey();
+        return;
+    }
+    // Exibe as bandas registradas
+    Console.WriteLine("\nBandas registradas:");
+    foreach (var banda in bandas.Keys)
+    {
+        Console.WriteLine($" - {banda}");
+    }
+
+    Console.Write("\nDigite o nome da banda que deseja avaliar: ");
+    string nomeBanda = Console.ReadLine()!;
+    // Verifica se a banda existe
+    if (bandas.ContainsKey(nomeBanda))
+    {
+        Console.Write("Avaliação (0-10): ");
+        try
+        {
+            int avaliacao = int.Parse(Console.ReadLine()!);
+            if (avaliacao < 0 || avaliacao > 10)
+                throw new Exception("Avaliação deve ser entre 0 e 10.");
+            bandas[nomeBanda].Add(avaliacao);
+            Console.WriteLine($"Avaliação {avaliacao} registrada para {nomeBanda}.\n");
+        }
+        catch (FormatException)
+        {
+            Console.WriteLine("Formato inválido. Por favor informe apenas números (0-10).");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro: {ex.Message}");
+        }
+    }
+    else
+    {
+        Console.WriteLine($"Banda {nomeBanda} não encontrada.");
+    }
+    Thread.Sleep(3000);
+}
+
 
 ExibeMenuOpcoes();
