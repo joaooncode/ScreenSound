@@ -70,11 +70,7 @@ void ExibeMenuOpcoes()
                     AvaliarBanda();
                     break;
                 case 4:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("Exibir média de avaliação da banda");
-                    Console.ResetColor();
-                    Console.WriteLine("\nPressione qualquer tecla para voltar ao menu.");
-                    Console.ReadKey();
+                    ExibirMediaBanda();
                     break;
                 case 5:
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -154,7 +150,7 @@ void AvaliarBanda()
     Console.Clear();
     Console.WriteLine("Avaliar uma banda");
 
-    // Exibe as bandas registradas
+    // Exibe as bandas registradas com índices
     if (bandas.Count == 0)
     {
         Console.WriteLine("Nenhuma banda registrada para avaliar.");
@@ -162,41 +158,100 @@ void AvaliarBanda()
         Console.ReadKey();
         return;
     }
-    // Exibe as bandas registradas
+
     Console.WriteLine("\nBandas registradas:");
-    foreach (var banda in bandas.Keys)
+    var listaBandas = bandas.Keys.ToList(); // Converte as chaves do dicionário para uma lista
+    for (int i = 0; i < listaBandas.Count; i++)
     {
-        Console.WriteLine($" - {banda}");
+        Console.WriteLine($"[{i}] {listaBandas[i]}");
     }
 
-    Console.Write("\nDigite o nome da banda que deseja avaliar: ");
-    string nomeBanda = Console.ReadLine()!;
-    // Verifica se a banda existe
-    if (bandas.ContainsKey(nomeBanda))
+    Console.Write("\nDigite o número da banda que deseja avaliar: ");
+    try
     {
-        Console.Write("Avaliação (0-10): ");
-        try
+        int indice = int.Parse(Console.ReadLine()!);
+
+        // Verifica se o índice é válido
+        if (indice < 0 || indice >= listaBandas.Count)
         {
+            Console.WriteLine("Índice inválido. Tente novamente.");
+        }
+        else
+        {
+            string nomeBanda = listaBandas[indice];
+            Console.Write($"Avaliação para {nomeBanda} (0-10): ");
             int avaliacao = int.Parse(Console.ReadLine()!);
+
             if (avaliacao < 0 || avaliacao > 10)
                 throw new Exception("Avaliação deve ser entre 0 e 10.");
+
             bandas[nomeBanda].Add(avaliacao);
             Console.WriteLine($"Avaliação {avaliacao} registrada para {nomeBanda}.\n");
         }
-        catch (FormatException)
-        {
-            Console.WriteLine("Formato inválido. Por favor informe apenas números (0-10).");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Erro: {ex.Message}");
-        }
     }
-    else
+    catch (FormatException)
     {
-        Console.WriteLine($"Banda {nomeBanda} não encontrada.");
+        Console.WriteLine("Formato inválido. Por favor informe apenas números.");
     }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Erro: {ex.Message}");
+    }
+
     Thread.Sleep(3000);
+}
+
+void ExibirMediaBanda()
+{
+    Console.Clear();
+    Console.WriteLine("Exibir média de avaliação da banda");
+    // Exibe as bandas registradas com índices
+    if (bandas.Count == 0)
+    {
+        Console.WriteLine("Nenhuma banda registrada para avaliar.");
+        Console.WriteLine("\nPressione qualquer tecla para voltar ao menu.");
+        Console.ReadKey();
+        return;
+    }
+    Console.WriteLine("\nBandas registradas:");
+    var listaBandas = bandas.Keys.ToList(); // Converte as chaves do dicionário para uma lista
+    for (int i = 0; i < listaBandas.Count; i++)
+    {
+        Console.WriteLine($"[{i}] {listaBandas[i]}");
+    }
+    Console.Write("\nDigite o número da banda que deseja ver a média: ");
+    try
+    {
+        int indice = int.Parse(Console.ReadLine()!);
+        // Verifica se o índice é válido
+        if (indice < 0 || indice >= listaBandas.Count)
+        {
+            Console.WriteLine("Índice inválido. Tente novamente.");
+        }
+        else
+        {
+            string nomeBanda = listaBandas[indice];
+            List<int> avaliacoes = bandas[nomeBanda];
+            if (avaliacoes.Count == 0)
+            {
+                Console.WriteLine($"Nenhuma avaliação registrada para {nomeBanda}.");
+            }
+            else
+            {
+                double media = avaliacoes.Average();
+                Console.WriteLine($"Média de avaliações para {nomeBanda}: {media:F2}");
+            }
+        }
+    }
+    catch (FormatException)
+    {
+        Console.WriteLine("Formato inválido. Por favor informe apenas números.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Erro: {ex.Message}");
+    }
+    Thread.Sleep(5000);
 }
 
 
