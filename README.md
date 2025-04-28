@@ -59,8 +59,6 @@ Basta digitar o número correspondente à opção desejada e pressionar **Enter*
 
 ## Melhorias futuras 🔮
 
-- Implementar a funcionalidade de avaliação de bandas.
-- Calcular e exibir a média de avaliações.
 - Adicionar persistência de dados (ex.: salvar as bandas em um arquivo ou banco de dados).
 - Melhorar o layout com animações no terminal.
 
